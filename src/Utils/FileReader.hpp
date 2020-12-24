@@ -12,9 +12,9 @@ namespace Utils
         virtual ~FileReader();
         
     private:
-        virtual size_t getPosImpl() const = 0;
-        virtual void seekImpl(size_t off) = 0;
-        virtual void readDataImpl(size_t off, void* buffer, size_t size) = 0;
+        virtual size_t getPosImpl() const;
+        virtual void seekImpl(size_t off);
+        virtual void readDataImpl(void* buffer, size_t size);
 
     protected:
         FILE* m_File;

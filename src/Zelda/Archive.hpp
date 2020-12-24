@@ -2,19 +2,17 @@
 #include <string>
 #include "../Types.h"
 #include "../Utils/Be.hpp"
+#include "../Utils/Signature.hpp"
 
-#define RARC_MAGIC  (0x42515243)
-
-
-namespace Zelda
+namespace Zelda::Arc
 {
     struct ArcName
     {
-        bool validateHash(std::string name, u16 hash) const
+        static bool validHash(std::string name, u16 hash)
         {
             return computeHash(name) == hash;
         }
-        u16 computeHash(std::string name) const
+        static u16 computeHash(std::string name)
         {
             u16 ret = 0;
             for (auto c : name)
@@ -25,22 +23,22 @@ namespace Zelda
 
     struct ArcHeader
     {
-        /* 0x00 */ u32 magic;
+        /* 0x00 */ Utils::Signature<4> magic;
         /* 0x04 */ u32 fileSize;
         /* 0x08 */ u32 headerSize;
         /* 0x0C */ u32 unk_0C;
 
         void bomSwap()
         {
-            BOM_SWAP(magic);
+            //BOM_SWAP(magic);
             BOM_SWAP(fileSize);
             BOM_SWAP(headerSize);
             BOM_SWAP(unk_0C);
         }
 
-        bool validate() const
+        bool valid() const
         {
-            return magic == RARC_MAGIC;
+            return magic.matches("RARC");
         }
     };
     static_assert(sizeof(ArcHeader) == 0x10);
@@ -66,9 +64,9 @@ namespace Zelda
         }
     };
 
-    struct ArcResEntry
+    struct ResEntry
     {
-        /* 0x00 */ char resType[4];//u32 resType;
+        /* 0x00 */ Utils::Signature<4> resType;
         /* 0x04 */ u32 name;
         /* 0x08 */ u16 nameHash;
         /* 0x0A */ u16 fileCount;
@@ -83,11 +81,11 @@ namespace Zelda
             BOM_SWAP(firstFileIdx);
         }
     };
-    static_assert(sizeof(ArcResEntry) == 0x10);
+    static_assert(sizeof(ResEntry) == 0x10);
 
 #define ATTR_DIR    (1<<1)
 
-    struct ArcFileEntry
+    struct FileEntry
     {
         /* 0x00 */ u16 unk_00;
         /* 0x02 */ u16 nameHash;
@@ -101,6 +99,11 @@ namespace Zelda
         /* 0x0C */ u32 fileSize;
         /* 0x10 */ u32 unk_10;
 
+        inline bool isDir() const
+        {
+            return !!(attr & ATTR_DIR);
+        }
+
         void bomSwap()
         {
             BOM_SWAP(unk_00);
@@ -111,5 +114,5 @@ namespace Zelda
             BOM_SWAP(unk_10);
         }
     };
-    static_assert(sizeof(ArcFileEntry) == 0x14);
+    static_assert(sizeof(FileEntry) == 0x14);
 }

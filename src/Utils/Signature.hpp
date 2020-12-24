@@ -1,4 +1,5 @@
 #pragma once
+#include <cstring>
 
 namespace Utils
 {
@@ -7,7 +8,7 @@ namespace Utils
     {
         char value[N];
 
-        inline void matches(const char* data) const
+        inline bool matches(const char* data) const
         {
             return !memcmp(value, data, N);
         }

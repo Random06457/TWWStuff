@@ -11,18 +11,33 @@ namespace Utils
         DataReader(DataReader* parent, size_t baseAddr, size_t size);
         virtual ~DataReader();
 
-        void readData(size_t off, void* buffer, size_t size);
-        std::vector<u8> readData(size_t off, size_t size);
+        void readData(void* buffer, size_t size);
+        std::vector<u8> readData(size_t size);
+        template<class T>
+        void readStrucBe(T* t)
+        {
+            readData(t, sizeof(T));
+            t->bomSwap();
+        }
+        template<class T>
+        T readStrucBe()
+        {
+            T t;
+            readStrucBe(&t);
+            return t;
+        }
+
         bool isSubReader() const;
 
-    protected:
         size_t getPos() const;
         void seek(size_t off);
+
+    protected:
 
         // assumes m_Parent == nullptr
         virtual size_t getPosImpl() const = 0;
         virtual void seekImpl(size_t off) = 0;
-        virtual void readDataImpl(size_t off, void* buffer, size_t size) = 0;
+        virtual void readDataImpl(void* buffer, size_t size) = 0;
 
     protected:
         DataReader* m_Parent;

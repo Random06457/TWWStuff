@@ -8,6 +8,8 @@ namespace Zelda
         auto inPtr = reinterpret_cast<const u8*>(hdr->data);
         auto outPtr = reinterpret_cast<u8*>(output);
 
+        assert(hdr->valid());
+
         size_t decSize = Utils::Be::bomSwap(hdr->decSize);
 
         size_t bitIdx = 7;

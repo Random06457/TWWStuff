@@ -25,16 +25,16 @@ namespace Utils
     }
 
 
-    void DataReader::readData(size_t off, void* buffer, size_t size)
+    void DataReader::readData(void* buffer, size_t size)
     {
-        assert(off+size < m_Size);
-        readDataImpl(off, buffer, size);
+        assert(getPos()+size < m_Size);
+        readDataImpl(buffer, size);
     }
 
-    std::vector<u8> DataReader::readData(size_t off, size_t size)
+    std::vector<u8> DataReader::readData(size_t size)
     {
         std::vector<u8> ret(size);
-        readData(off, ret.data(), size);
+        readData(ret.data(), size);
         return ret;
     }
 

@@ -23,6 +23,11 @@ namespace Zelda
             {
                 BOM_SWAP(decSize);
             }
+
+            bool valid() const
+            {
+                return magic.matches("Yaz0");
+            }
         };
         static_assert(sizeof(Yaz0Header) == 0x10);
 

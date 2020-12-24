@@ -30,10 +30,8 @@ namespace Utils
         fseek(m_File, off, SEEK_SET);
     }
 
-    void FileReader::readDataImpl(size_t off, void* buffer, size_t size)
-    {   
-        seek(off);
-        
+    void FileReader::readDataImpl(void* buffer, size_t size)
+    {
         size_t read = 0;
         while (read < size)
             read += fread(reinterpret_cast<u8*>(buffer)+read, 1, size-read, m_File);

@@ -1,85 +1,71 @@
 #include "GcmReader.hpp"
+#include "../Utils/FileReader.hpp"
+#include "../Utils/MemReader.hpp"
 
 namespace Gc::Gcm
 {
-    Reader::Reader(FILE* f) : m_File(f)
+    Reader::Reader(std::unique_ptr<Utils::DataReader> reader) :
+        m_Reader(std::move(reader))
     {
         readHeaders();
     }
-    Reader::Reader(std::string path) : Reader(fopen(path.c_str(), "rb"))
+
+    Reader::Reader(std::string filePath) : 
+        Reader(std::make_unique<Utils::FileReader>(filePath))
     {
 
     }
-    Reader::~Reader()
+    Reader::Reader(void* buffer, size_t size) :
+        Reader(std::make_unique<Utils::MemReader>(buffer, size))
     {
-        fclose(m_File);
-    }
 
-    void Reader::seek(size_t off) const
-    {
-        fseek(m_File, off, SEEK_SET);
     }
 
     void Reader::readHeaders()
     {
-        seek(0);
-        m_GcmHdr.read(m_File);
+        m_Reader->seek(0);
+        m_Reader->readStrucBe(&m_GcmHdr);
 
-        seek(0x2440);
-        m_AppLoaderHdr.read(m_File);
+        m_Reader->seek(0x2440);
+        m_Reader->readStrucBe(&m_AppLoaderHdr);
 
-        seek(m_GcmHdr.dolOff);
-        m_DolHdr.read(m_File);
+        m_Reader->seek(m_GcmHdr.dolOff);
+        m_Reader->readStrucBe(&m_DolHdr);
         
-        seek(m_GcmHdr.fstOff);
-        FileEntry root;
-        root.read(m_File);
+        m_Reader->seek(m_GcmHdr.fstOff);
+        auto root = m_Reader->readStrucBe<FileEntry>();
 
-        seek(m_GcmHdr.fstOff);
+        m_Reader->seek(m_GcmHdr.fstOff);
+
         m_FileEntries.reserve(root.dir.nextOff);
-        m_FileEntries.resize(root.dir.nextOff);
-        fread(m_FileEntries.data(), sizeof(FileEntry), root.dir.nextOff, m_File);
-        for (auto& entry : m_FileEntries)
-            entry.bomSwap();
+        for (size_t i = 0; i < root.dir.nextOff; i++)
+            m_FileEntries.push_back(m_Reader->readStrucBe<FileEntry>());
 
         size_t strTabSize = m_GcmHdr.fstSize - root.dir.nextOff;
         m_FstStrTable.reserve(strTabSize);
         m_FstStrTable.resize(strTabSize);
-        fread(m_FstStrTable.data(), 1, strTabSize, m_File);
-    }
-
-    std::vector<u8> Reader::readData(size_t off, size_t size) const
-    {
-        std::vector<u8> ret(size);
-
-        seek(off);
-        fread(ret.data(), 1, size, m_File);
-
-        return ret;
+        m_Reader->readData(m_FstStrTable.data(), strTabSize);
     }
 
     std::vector<u8> Reader::readDol() const
     {
-        return readData(m_GcmHdr.dolOff, m_DolHdr.getDolSize());
+        m_Reader->seek(m_GcmHdr.dolOff);
+        return m_Reader->readData(m_DolHdr.getDolSize());
     }
 
     std::vector<u8> Reader::readAppLoader() const
     {
-        return readData(0x2440 + sizeof(AppLoaderHeader), m_AppLoaderHdr.size);
-    }
-
-    const char* Reader::getName(FileEntry* entry) const
-    {
-        return m_FstStrTable.data() + entry->nameOff;
+        m_Reader->seek(0x2440 + sizeof(AppLoaderHeader));
+        return m_Reader->readData(m_AppLoaderHdr.size);
     }
     
     
-    void Reader::iterFst(std::function<void(u32, std::string, std::string, FileEntry*)> callback)
+    void Reader::iterFst(std::function<void(u32, std::string, FileEntry*)> callback)
     {
         iterFst(0, "", 1, m_FileEntries[0].dir.nextOff, callback);
     }
 
-    size_t Reader::iterFst(u32 level, std::string parentPath, size_t i, size_t next, std::function<void(u32, std::string, std::string, FileEntry*)> callback)
+    size_t Reader::iterFst(u32 level, std::string parentPath, size_t i, size_t next, std::function<void(u32, std::string, FileEntry*)> callback)
     {
         while (i < next)
         {   
@@ -87,7 +73,7 @@ namespace Gc::Gcm
 
             std::string path = parentPath + "/" + getName(entry);
 
-            callback(level, parentPath, path, entry);
+            callback(level, path, entry);
 
             if (entry->isDir)
                 i = iterFst(level+1, path, i+1, entry->dir.nextOff, callback);
@@ -101,7 +87,8 @@ namespace Gc::Gcm
     std::vector<u8> Reader::readFile(FileEntry* entry) const
     {
         assert(!entry->isDir);
-        return readData(entry->file.fileOff, entry->file.fileSize);
+        m_Reader->seek(entry->file.fileOff);
+        return m_Reader->readData(entry->file.fileSize);
     }
 
     void normalizePath(std::string& path)

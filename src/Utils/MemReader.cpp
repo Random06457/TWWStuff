@@ -20,7 +20,7 @@ namespace Utils
     {
         m_Pos = off;
     }
-    void MemReader::readDataImpl(size_t off, void* buffer, size_t size)
+    void MemReader::readDataImpl(void* buffer, size_t size)
     {
         memcpy(buffer, m_Buffer + m_Pos, size);
         m_Pos += size;
