@@ -17,7 +17,7 @@ namespace Utils
     FileReader::~FileReader()
     {
         if (!isSubReader())
-        fclose(m_File);
+            fclose(m_File);
     }
     
     size_t FileReader::getPosImpl() const

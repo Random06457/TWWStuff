@@ -6,21 +6,6 @@
 
 namespace Zelda::Arc
 {
-    struct ArcName
-    {
-        static bool validHash(std::string name, u16 hash)
-        {
-            return computeHash(name) == hash;
-        }
-        static u16 computeHash(std::string name)
-        {
-            u16 ret = 0;
-            for (auto c : name)
-                ret = ret*3 + c;
-            return ret;
-        }
-    };
-
     struct ArcHeader
     {
         /* 0x00 */ Utils::Signature<4> magic;

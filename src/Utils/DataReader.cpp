@@ -27,7 +27,7 @@ namespace Utils
 
     void DataReader::readData(void* buffer, size_t size)
     {
-        assert(getPos()+size < m_Size);
+        assert(getPos()+size <= m_Size);
         readDataImpl(buffer, size);
     }
 

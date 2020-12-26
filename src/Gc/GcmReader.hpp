@@ -17,8 +17,6 @@ namespace Gc
         class Reader
         {
         public:
-            Reader(std::string path);
-            Reader(void* buffer, size_t size);
             Reader(std::unique_ptr<Utils::DataReader> reader);
 
             std::vector<u8> readDol() const;
@@ -34,7 +32,7 @@ namespace Gc
             void iterFst(std::function<void(u32, std::string, FileEntry*)> callback);
         private:
             size_t iterFst(u32 level, std::string parentPath, size_t i, size_t next, std::function<void(u32, std::string, FileEntry*)> callback);
-            void readHeaders();
+            void parse();
 
         public:
             std::unique_ptr<Utils::DataReader> m_Reader;

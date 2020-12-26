@@ -11,8 +11,6 @@ namespace Zelda::Arc
     class Reader
     {
     public:
-        Reader(std::string filePath);
-        Reader(void* buffer, size_t size);
         Reader(std::unique_ptr<Utils::DataReader> reader);
 
         void print();

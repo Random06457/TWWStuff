@@ -1,6 +1,7 @@
 #include "ArcReader.hpp"
 #include "../Utils/FileReader.hpp"
 #include "../Utils/MemReader.hpp"
+#include "NameHash.hpp"
 
 namespace Zelda::Arc
 {
@@ -8,17 +9,6 @@ namespace Zelda::Arc
         m_Reader(std::move(reader))
     {
         readHeaders();   
-    }
-    
-    Reader::Reader(std::string filePath) : 
-        Reader(std::make_unique<Utils::FileReader>(filePath))
-    {
-
-    }
-    Reader::Reader(void* buffer, size_t size) :
-        Reader(std::make_unique<Utils::MemReader>(buffer, size))
-    {
-
     }
 
     void Reader::readHeaders()
@@ -55,7 +45,7 @@ namespace Zelda::Arc
         {
             printf("type \"%.*s\"; name=\"%s\"", 4, m_ResEntries[i].resType.value, getName(&m_ResEntries[i]));
 
-            if (!ArcName::validHash(getName(&m_ResEntries[i]), m_ResEntries[i].nameHash))
+            if (!NameHash::validHash(getName(&m_ResEntries[i]), m_ResEntries[i].nameHash))
                 printf(" (INVALID NAME HASH)");
             printf("\n");
 
@@ -72,7 +62,7 @@ namespace Zelda::Arc
                             m_ResEntries[m_FileEntries[j].parent].resType.value
                         );
 
-                    if (!ArcName::validHash(getName(&m_FileEntries[j]), m_FileEntries[j].nameHash))
+                    if (!NameHash::validHash(getName(&m_FileEntries[j]), m_FileEntries[j].nameHash))
                         printf(" (INVALID NAME HASH)");
                     printf("\n");
                 }
@@ -90,7 +80,7 @@ namespace Zelda::Arc
     std::vector<u8> Reader::readFile(const FileEntry* entry) const
     {
         assert(!entry->isDir());
-        m_Reader->seek(entry->fileOff);
+        m_Reader->seek(m_Hdr.headerSize + m_Hdr2.strTabOff + m_Hdr2.strTabSize + entry->fileOff);
         return m_Reader->readData(entry->fileSize);
     }
 

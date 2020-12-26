@@ -10,7 +10,7 @@ namespace Zelda
     class Yaz0
     {
 
-    private:
+    public:
     
         struct Yaz0Header
         {

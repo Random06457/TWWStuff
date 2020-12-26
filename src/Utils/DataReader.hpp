@@ -32,6 +32,11 @@ namespace Utils
         size_t getPos() const;
         void seek(size_t off);
 
+        inline size_t getSize() const
+        {
+            return m_Size;
+        }
+
     protected:
 
         // assumes m_Parent == nullptr

@@ -7,21 +7,10 @@ namespace Gc::Gcm
     Reader::Reader(std::unique_ptr<Utils::DataReader> reader) :
         m_Reader(std::move(reader))
     {
-        readHeaders();
+        parse();
     }
 
-    Reader::Reader(std::string filePath) : 
-        Reader(std::make_unique<Utils::FileReader>(filePath))
-    {
-
-    }
-    Reader::Reader(void* buffer, size_t size) :
-        Reader(std::make_unique<Utils::MemReader>(buffer, size))
-    {
-
-    }
-
-    void Reader::readHeaders()
+    void Reader::parse()
     {
         m_Reader->seek(0);
         m_Reader->readStrucBe(&m_GcmHdr);
