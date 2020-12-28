@@ -13,6 +13,9 @@
 #include "Zelda/ArcReader.hpp"
 #include "Zelda/BdlReader.hpp"
 #include "Gc/RelReader.hpp"
+#include "Zelda/BtiReader.hpp"
+#include "3rdparty/lodepng.h"
+#include "Gc/GxTexture.hpp"
 
 
 std::unique_ptr<Utils::FileReader> getFileReader(ArgReader* args)
@@ -220,6 +223,39 @@ void relInfoHandler(ArgReader* args)
     rel.print();
 }
 
+
+void btiInfoHandler(ArgReader* args)
+{
+    Zelda::Bti::Reader reader(getFileReader(args));
+    reader.print();
+}
+
+void btiToPngHandler(ArgReader* args)
+{
+    Zelda::Bti::Reader reader(getFileReader(args));
+    auto outPath = args->read();
+
+    auto rgba = reader.toRGBA8();
+    lodepng::encode(outPath, rgba, reader.m_Hdr.width, reader.m_Hdr.height);
+}
+
+void ddsToPngHandler(ArgReader* args)
+{
+    const size_t w = 152, h = 104;
+    const u8 fmt = GX_TF_CMPR;
+
+    auto reader = getFileReader(args);
+    auto outPath = args->read();
+
+    assert(reader->getSize() == w*h*4/8);
+
+    reader->seek(0);
+    auto data = reader->readData(reader->getSize());
+    
+    auto rgba = Gc::Gx::Texture::convertToRGBA8(data.data(), w, h, fmt);
+    lodepng::encode(outPath, rgba, w, h);
+}
+
 std::vector<ArgHandler> g_gcmCmdHandler = {
     { "info", &gcmInfoHandler },
     { "extract", &gcmExtractHandler },
@@ -251,6 +287,15 @@ std::vector<ArgHandler> g_relCmdHandler = {
     { "info", &relInfoHandler },  
 };
 
+std::vector<ArgHandler> g_btiCmdHandler = {
+    { "info", &btiInfoHandler },
+    { "topng", &btiToPngHandler },
+};
+
+std::vector<ArgHandler> g_ddsCmdHandler = {
+    { "topng", &ddsToPngHandler },
+};
+
 std::vector<ArgHandler> g_fileTypeHandler = {
     { "gcm", std::bind(&ArgReader::processHandlers, std::placeholders::_1, g_gcmCmdHandler) },
     { "arc", std::bind(&ArgReader::processHandlers, std::placeholders::_1, g_arcCmdHandler) },
@@ -258,6 +303,8 @@ std::vector<ArgHandler> g_fileTypeHandler = {
     { "bdl", std::bind(&ArgReader::processHandlers, std::placeholders::_1, g_bdlCmdHandler) },
     { "rel", std::bind(&ArgReader::processHandlers, std::placeholders::_1, g_relCmdHandler) },
     { "dol", std::bind(&ArgReader::processHandlers, std::placeholders::_1, g_dolCmdHandler) },
+    { "bti", std::bind(&ArgReader::processHandlers, std::placeholders::_1, g_btiCmdHandler) },
+    { "dds", std::bind(&ArgReader::processHandlers, std::placeholders::_1, g_ddsCmdHandler) },
     { "file", &fileHandler },
 };
 

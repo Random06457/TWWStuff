@@ -9,7 +9,8 @@ void ArgReader::processHandlers(std::vector<ArgHandler> handlers)
         if (!strcmp(mode.c_str(), entry.name))
         {
             entry.callback(this);
-            break;
+            return;
         }
     }
+    assert(0 && "invalid option");
 }

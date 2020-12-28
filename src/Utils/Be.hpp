@@ -2,7 +2,6 @@
 
 #include <stdio.h>
 #include <assert.h>
-#include <cstddef>
 #include <algorithm>
 #include <vector>
 #include "../Types.h"
@@ -17,6 +16,9 @@
 #define SWAP_TBL_ENTRY(type, field) { offsetof(type, field), sizeof(type::field) }
 
 #define BOM_SWAP(field) Utils::Be::bomSwap(&field, sizeof(field))
+
+#define BS16(x) static_cast<u16>((((x) & 0xFF) << 8) | (((x) & 0xFF00) >> 8))
+#define BS32(x) static_cast<u32>((((x) & 0xFF) << 24) | (((x) & 0xFF000000) >> 24) | (((x) & 0xFF0000) >> 8) | (((x) & 0xFF00) << 8))
 
 namespace Utils
 {
