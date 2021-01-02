@@ -1,3 +1,7 @@
 .vscode
 twwstuff
+twwstuff.exe
+*.ui.h
+*.moc.cpp
+*.qrc.cpp
 build

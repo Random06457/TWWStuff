@@ -1,6 +1,6 @@
 #pragma once
-#include "../Types.h"
-#include "../Utils/Be.hpp"
+#include "Types.h"
+#include "Utils/Be.hpp"
 
 namespace Gc::Rel
 {

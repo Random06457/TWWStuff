@@ -1,8 +1,9 @@
 #pragma once
-#include "../Types.h"
-#include "../Utils/Be.hpp"
-#include "../Utils/Signature.hpp"
+#include "Types.h"
+#include "Utils/Be.hpp"
+#include "Utils/Signature.hpp"
 #include "NameHash.hpp"
+#include "BinaryRes.hpp"
 
 #define MAGIC_BDL3  "J3D2bdl3"
 #define MAGIC_BDL4  "J3D2bdl4"
@@ -29,18 +30,6 @@ namespace Zelda::Bdl
         }
     };
     static_assert(sizeof(BdlHeader) == 0x20);
-
-    struct DataBlock
-    {
-        /* 0x00 */ Utils::Signature<4> magic;
-        /* 0x04 */ u32 size;
-
-        void bomSwap()
-        {
-            BOM_SWAP(size);
-        }
-    };
-    static_assert(sizeof(DataBlock) == 0x08);
 
     struct ResNameTable
     {
@@ -93,7 +82,7 @@ namespace Zelda::Bdl
         /* 0x00 */ u16 type;
         /* 0x02 */ u16 idx;
     };
-    struct InfoHeader : DataBlock
+    struct InfoHeader : BlockHeader
     {
         /* 0x08 */ u16 flag; // ??
         /* 0x0C */ u32 unk_0C;

@@ -4,7 +4,7 @@
 #include <memory>
 #include <functional>
 #include "Archive.hpp"
-#include "../Utils/DataReader.hpp"
+#include "Utils/DataReader.hpp"
 
 namespace Zelda::Arc
 {

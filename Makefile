@@ -2,28 +2,29 @@ SRC := src
 BUILD := build
 TARGET := twwstuff
 
+QT_SRC_DIR := $(SRC)/Qt
+CMD_SRC_DIR := $(SRC)/Cmd
+EXCLUDE_QT := -path $(QT_SRC_DIR) -prune -false -o
+EXCLUDE_CMD := -path $(CMD_SRC_DIR) -prune -false -o
 
-SRC_DIRS := $(shell find $(SRC) -type d)
-SRC_CPP := $(shell find $(SRC) -name *.cpp)
-SRC_C := $(shell find $(SRC) -name *.c)
-
-ifndef ($(OPT_FLAGS))
-	OPT_FLAGS := -g
-endif
-
+INCDIRS := -I$(SRC)
 LIBS := 
-CPP_FLAGS := -Werror
 
-$(shell mkdir -p $(SRC_DIRS:$(SRC)%=$(BUILD)%))
+cmd:
+	$(MAKE) -f Makefile.cmdline
 
-OBJS = $(SRC_CPP:$(SRC)/%.cpp=$(BUILD)/%.o)
+qt:
+	$(MAKE) -f Makefile.Qt moc
+	$(MAKE) -f Makefile.Qt all
 
+moc:
+	$(MAKE) -f Makefile.Qt moc
 
-$(BUILD)/%.o : $(SRC)/%.cpp
-	g++ -o $@ $(OPT_FLAGS) $(CPP_FLAGS) -c $<
-
-all: $(OBJS)
-	g++ -o $(TARGET) $(LIBS) $^
+moc_clean:
+	$(MAKE) -f Makefile.Qt moc_clean
 
 clean:
-	rm -rf $(BUILD) $(TARGET)
+	$(MAKE) -f Makefile.Qt clean
+	$(MAKE) -f Makefile.cmdline clean
+
+.PHONY: cmd qt moc clean_moc clean

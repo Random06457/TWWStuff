@@ -1,8 +1,9 @@
+#include <memory>
 #include "Yaz0.hpp"
 
-namespace Zelda
+namespace Zelda::Yaz0
 {
-    void Yaz0::decompress(const void* input, void* output)
+    void decompress(const void* input, void* output)
     {
         auto hdr = reinterpret_cast<const Yaz0Header*>(input);
         auto inPtr = reinterpret_cast<const u8*>(hdr->data);
@@ -52,11 +53,28 @@ namespace Zelda
         }
         
     }
-    std::vector<u8> Yaz0::decompress(std::vector<u8> data)
+    std::vector<u8> decompress(std::vector<u8> data)
     {
         Yaz0Header* hdr = reinterpret_cast<Yaz0Header*>(data.data());
         std::vector<u8> ret(Utils::Be::bomSwap(hdr->decSize));
         decompress(data.data(), ret.data());
         return ret;
+    }
+
+    
+    std::unique_ptr<Utils::DataReader> createReader(std::unique_ptr<Utils::DataReader> oldReader)
+    {
+        Yaz0Header hdr;
+        oldReader->seek(0);
+        oldReader->readStrucBe(&hdr);
+        assert(hdr.valid());
+
+        size_t size = oldReader->getSize();
+
+        char* decBuff = new char[hdr.decSize];
+        oldReader->seek(0);
+        auto data = oldReader->readData(size);
+        Yaz0::decompress(data.data(), decBuff);
+        return std::make_unique<Utils::MemReader>(decBuff, hdr.decSize, true);
     }
 }

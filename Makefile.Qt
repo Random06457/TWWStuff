@@ -1,0 +1,63 @@
+SRC := src
+BUILD := build
+TARGET := twwstuff
+
+QT_SRC_DIR := $(SRC)/Qt
+CMD_SRC_DIR := $(SRC)/Cmd
+EXCLUDE_QT := -path $(QT_SRC_DIR) -prune -false -o
+EXCLUDE_CMD := -path $(CMD_SRC_DIR) -prune -false -o
+
+INCDIRS := -I$(SRC)
+LIBS := 
+
+CXX := x86_64-w64-mingw32-g++
+MOC := $(QT_PATH)/bin/moc.exe
+UIC := $(QT_PATH)/bin/uic.exe
+RCC := $(QT_PATH)/bin/rcc.exe
+
+
+CXX_FLAGS := -Wall -DQT_BUILD
+LIBS += -L$(QT_PATH)/lib -lQt5Widgets -lQt5Gui -lQt5Core -lqtmain
+INCDIRS += -I$(QT_PATH)/include -I$(QT_PATH)/include/QtGui -I$(QT_PATH)/include/QtCore -I$(QT_SRC_DIR)
+
+
+SRC_DIRS := $(shell find $(SRC) $(EXCLUDE_CMD) -type d)
+CXX_SRC := $(shell find $(SRC) $(EXCLUDE_CMD) -name *.cpp)
+
+QRC_SRC := $(patsubst %.qrc,%.qrc.cpp,$(shell find $(QT_SRC_DIR) -name *.qrc))
+UI_SRC := $(patsubst %.ui,%.ui.h,$(shell find $(QT_SRC_DIR) -name *.ui))
+MOC_SRC := $(patsubst %.h,%.moc.cpp,$(shell find $(QT_SRC_DIR) -name *.h -and ! -name *.ui.h))
+
+OBJS := $(CXX_SRC:$(SRC)/%.cpp=$(BUILD)/%.o)
+
+
+$(BUILD)/%.o : $(SRC)/%.cpp
+	$(CXX) $(CXX_FLAGS) $(INCDIRS) -c $< -o $@
+
+$(QT_SRC_DIR)/%.qrc.cpp : $(QT_SRC_DIR)/%.qrc
+	$(RCC) $< -o $@
+
+$(QT_SRC_DIR)/%.ui.h : $(QT_SRC_DIR)/%.ui
+	$(UIC) $< -o $@
+
+$(QT_SRC_DIR)/%.moc.cpp : $(QT_SRC_DIR)/%.h
+	$(MOC) $< $(INCDIRS) -o $@
+
+$(TARGET): $(OBJS)
+	$(CXX) $^ $(LIBS) -o $@
+
+
+$(shell mkdir -p $(SRC_DIRS:$(SRC)%=$(BUILD)%))
+
+all: $(TARGET)
+
+moc: $(UI_SRC) $(QRC_SRC) $(MOC_SRC)
+	@echo ------------------- MOC done -------------------
+
+moc_clean:
+	rm -rf $(QRC_SRC) $(UI_SRC) $(MOC_SRC)
+
+clean: moc_clean
+	rm -rf $(BUILD) $(TARGET) $(TARGET).exe
+
+.PHONY: clean moc moc_clean

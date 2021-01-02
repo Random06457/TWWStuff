@@ -4,9 +4,9 @@
 #include <functional>
 #include <string>
 #include <memory>
-#include "../Types.h"
-#include "../Utils/Be.hpp"
-#include "../Utils/DataReader.hpp"
+#include "Types.h"
+#include "Utils/Be.hpp"
+#include "Utils/DataReader.hpp"
 #include "Gcm.hpp"
 #include "Dol.hpp"
 

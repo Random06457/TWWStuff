@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include "../Utils/DataReader.hpp"
+#include "Utils/DataReader.hpp"
 #include "Bdl.hpp"
 
 namespace Zelda::Bdl

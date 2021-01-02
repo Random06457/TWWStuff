@@ -1,6 +1,6 @@
 #include "GcmReader.hpp"
-#include "../Utils/FileReader.hpp"
-#include "../Utils/MemReader.hpp"
+#include "Utils/FileReader.hpp"
+#include "Utils/MemReader.hpp"
 
 namespace Gc::Gcm
 {

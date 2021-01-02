@@ -13,7 +13,7 @@ namespace Zelda::Bdl
     {
         m_Reader->readStrucBe(&m_Hdr);
         
-        DataBlock res;
+        BlockHeader res;
         for (size_t i = 0; i < m_Hdr.resCount; i++)
         {
             size_t resHdrPos = m_Reader->getPos();

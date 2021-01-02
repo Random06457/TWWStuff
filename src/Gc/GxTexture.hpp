@@ -1,9 +1,9 @@
 #pragma once
 
 #include <vector>
-#include "../Types.h"
+#include "Types.h"
 #include "Gx.hpp"
-#include "../Utils/Be.hpp"
+#include "Utils/Be.hpp"
 
 
 namespace Gc::Gx::Texture

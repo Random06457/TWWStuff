@@ -1,6 +1,6 @@
 #include "ArcReader.hpp"
-#include "../Utils/FileReader.hpp"
-#include "../Utils/MemReader.hpp"
+#include "Utils/FileReader.hpp"
+#include "Utils/MemReader.hpp"
 #include "NameHash.hpp"
 
 namespace Zelda::Arc

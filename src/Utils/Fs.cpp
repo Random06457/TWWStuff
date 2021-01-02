@@ -1,7 +1,7 @@
 #include <assert.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include "../Types.h"
+#include "Types.h"
 #include "Fs.hpp"
 
 namespace Utils
@@ -49,7 +49,11 @@ namespace Utils
         for (size_t i = 0; i < path.size()+1; i++)
             if (i == path.size() || path[i] == '/' || path[i] == '\\')
             {
+#ifdef _WIN32
+                s32 res = mkdir(std::string(path, 0, i).c_str());
+#else
                 s32 res = mkdir(std::string(path, 0, i).c_str(), 0777);
+#endif
                 assert(!res || errno == EEXIST);
             }
     }

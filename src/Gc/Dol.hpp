@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Types.h"
-#include "../Utils/Be.hpp"
+#include "Types.h"
+#include "Utils/Be.hpp"
 
 #define TEXT_SECTION_COUNT  7
 #define DATA_SECTION_COUNT  11

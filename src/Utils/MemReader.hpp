@@ -6,7 +6,8 @@ namespace Utils
     class MemReader : public DataReader
     {
     public:
-        MemReader(void* buffer, size_t size);
+        MemReader(void* buffer, size_t size, bool freeInDtor);
+        virtual ~MemReader();
     
     private:
         virtual size_t getPosImpl() const;
@@ -16,6 +17,7 @@ namespace Utils
     protected:
         u8* m_Buffer;
         size_t m_Pos;
+        bool m_FreeInDtor;
     };
     
     

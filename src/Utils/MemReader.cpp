@@ -3,12 +3,19 @@
 
 namespace Utils
 {
-    MemReader::MemReader(void* buffer, size_t size)
-        : DataReader(),
+    MemReader::MemReader(void* buffer, size_t size, bool freeInDtor) :
+        DataReader(),
         m_Buffer(reinterpret_cast<u8*>(buffer)),
-        m_Pos(0)
+        m_Pos(0),
+        m_FreeInDtor(freeInDtor)
     {
         m_Size = size;
+    }
+
+    MemReader::~MemReader()
+    {
+        if (m_FreeInDtor && !isSubReader())
+            delete[] m_Buffer;
     }
 
     

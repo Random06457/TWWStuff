@@ -1,5 +1,5 @@
 #include "BtiReader.hpp"
-#include "../Gc/GxTexture.hpp"
+#include "Gc/GxTexture.hpp"
 
 namespace Zelda::Bti
 {

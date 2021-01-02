@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
-#include "../Types.h"
-#include "../Utils/Be.hpp"
-#include "../Utils/Signature.hpp"
+#include "Types.h"
+#include "Utils/Be.hpp"
+#include "Utils/Signature.hpp"
 
 namespace Zelda::Arc
 {

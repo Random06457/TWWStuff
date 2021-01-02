@@ -1,6 +1,6 @@
 #pragma once
-#include "../Utils/Be.hpp"
-#include "../Utils/Signature.hpp"
+#include "Utils/Be.hpp"
+#include "Utils/Signature.hpp"
 
 namespace Zelda::ItemTable
 {

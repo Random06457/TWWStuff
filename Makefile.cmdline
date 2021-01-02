@@ -1,0 +1,45 @@
+SRC := src
+BUILD := build
+TARGET := twwstuff
+
+QT_SRC_DIR := $(SRC)/Qt
+CMD_SRC_DIR := $(SRC)/Cmd
+EXCLUDE_QT := -path $(QT_SRC_DIR) -prune -false -o
+EXCLUDE_CMD := -path $(CMD_SRC_DIR) -prune -false -o
+
+INCDIRS := -I$(SRC)
+LIBS := 
+
+
+
+CXX := g++
+
+SRC_DIRS := $(shell find $(SRC) $(EXCLUDE_QT) -type d)
+CXX_SRC := $(shell find $(SRC) $(EXCLUDE_QT) -name *.cpp)
+C_SRC := $(shell find $(SRC) $(EXCLUDE_QT) -name *.c)
+
+ifndef ($(OPT_FLAGS))
+	OPT_FLAGS := -g
+endif
+
+CXX_FLAGS := -Werror $(OPT_FLAGS)
+
+
+OBJS = $(CXX_SRC:$(SRC)/%.cpp=$(BUILD)/%.o)
+
+$(BUILD)/%.o : $(SRC)/%.cpp
+	$(CXX) $(CXX_FLAGS) $(INCDIRS) -c $< -o $@
+
+
+$(shell mkdir -p $(SRC_DIRS:$(SRC)%=$(BUILD)%))
+
+all: $(OBJS)
+	$(CXX) -o $(TARGET) $(LIBS) $^
+
+install:
+	cp $(TARGET) /usr/local/bin/
+
+clean:
+	rm -rf $(BUILD) $(TARGET)
+
+.PHONY: install all clean

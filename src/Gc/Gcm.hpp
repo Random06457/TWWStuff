@@ -3,8 +3,8 @@
 #include <vector>
 #include <functional>
 #include <string>
-#include "../Types.h"
-#include "../Utils/Be.hpp"
+#include "Types.h"
+#include "Utils/Be.hpp"
 #include "Dol.hpp"
 
 namespace Gc

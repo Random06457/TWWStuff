@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Types.h"
-#include "../Utils/Be.hpp"
+#include "Types.h"
+#include "Utils/Be.hpp"
 
 namespace Zelda::Bti
 {

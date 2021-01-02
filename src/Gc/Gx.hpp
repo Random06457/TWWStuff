@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Types.h"
+#include "Types.h"
 
 // vtxattr
 #define GX_NONE             0           /*!< Input data is not used */

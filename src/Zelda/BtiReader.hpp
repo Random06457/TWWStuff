@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "../Utils/DataReader.hpp"
+#include "Utils/DataReader.hpp"
 #include "Bti.hpp"
 
 namespace Zelda::Bti
