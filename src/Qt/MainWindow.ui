@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>400</height>
+    <width>677</width>
+    <height>494</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>80</x>
+      <x>270</x>
       <y>30</y>
       <width>47</width>
       <height>13</height>
@@ -30,7 +30,7 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>140</x>
+      <x>330</x>
       <y>30</y>
       <width>75</width>
       <height>23</height>
@@ -40,15 +40,26 @@
      <string>PushButton</string>
     </property>
    </widget>
-   <widget class="QTreeView" name="treeView">
+   <widget class="QTreeWidget" name="treeWidget">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>110</y>
-      <width>256</width>
-      <height>192</height>
+      <x>10</x>
+      <y>10</y>
+      <width>251</width>
+      <height>431</height>
      </rect>
     </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::DefaultContextMenu</enum>
+    </property>
+    <property name="headerHidden">
+     <bool>true</bool>
+    </property>
+    <column>
+     <property name="text">
+      <string notr="true">1</string>
+     </property>
+    </column>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -56,7 +67,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>600</width>
+     <width>677</width>
      <height>21</height>
     </rect>
    </property>
@@ -99,8 +110,8 @@
      <y>85</y>
     </hint>
     <hint type="destinationlabel">
-     <x>305</x>
-     <y>154</y>
+     <x>233</x>
+     <y>51</y>
     </hint>
    </hints>
   </connection>
@@ -111,8 +122,8 @@
    <slot>onOpenGCM()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>299</x>
-     <y>199</y>
+     <x>-1</x>
+     <y>-1</y>
     </hint>
     <hint type="destinationlabel">
      <x>299</x>
@@ -120,8 +131,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>treeWidget</sender>
+   <signal>itemClicked(QTreeWidgetItem*,int)</signal>
+   <receiver>MainWindowClass</receiver>
+   <slot>onTreeItemClick(QTreeWidgetItem*,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>320</x>
+     <y>137</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>348</x>
+     <y>116</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onBtnPush()</slot>
+  <slot>onTreeItemClick(QTreeWidgetItem*,int)</slot>
  </slots>
 </ui>

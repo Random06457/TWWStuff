@@ -6,6 +6,7 @@
 #include "Utils/Signature.hpp"
 #include "Utils/MemReader.hpp"
 
+#define YAZ0_MAGIC   "Yaz0"
 namespace Zelda::Yaz0
 {   
     struct Yaz0Header
@@ -27,7 +28,7 @@ namespace Zelda::Yaz0
     };
     static_assert(sizeof(Yaz0Header) == 0x10);
 
-    void decompress(const void* input, void* output);
+    void decompress(const void* input, void* output, size_t outSize = SIZE_MAX);
     std::vector<u8> decompress(std::vector<u8> data);
     std::unique_ptr<Utils::DataReader> createReader(std::unique_ptr<Utils::DataReader> oldReader);
 }

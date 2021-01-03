@@ -5,6 +5,8 @@
 #include "Utils/Be.hpp"
 #include "BinaryRes.hpp"
 
+#define BFN_MAGIC "FONTbfn1"
+
 namespace Zelda::Bfn
 {
     struct BfnHeader
@@ -17,6 +19,11 @@ namespace Zelda::Bfn
         void bomSwap()
         {
             BOM_SWAP(blockCount);
+        }
+
+        bool valid() const
+        {
+            return magic.matches(BFN_MAGIC);
         }
     };
     static_assert(sizeof(BfnHeader) == 0x20);

@@ -4,6 +4,8 @@
 #include "Utils/Be.hpp"
 #include "Utils/Signature.hpp"
 
+#define ARC_MAGIC   "RARC"
+
 namespace Zelda::Arc
 {
     struct ArcHeader
@@ -23,7 +25,7 @@ namespace Zelda::Arc
 
         bool valid() const
         {
-            return magic.matches("RARC");
+            return magic.matches(ARC_MAGIC);
         }
     };
     static_assert(sizeof(ArcHeader) == 0x10);

@@ -3,7 +3,7 @@
 
 namespace Zelda::Yaz0
 {
-    void decompress(const void* input, void* output)
+    void decompress(const void* input, void* output, size_t outSize)
     {
         auto hdr = reinterpret_cast<const Yaz0Header*>(input);
         auto inPtr = reinterpret_cast<const u8*>(hdr->data);
@@ -12,6 +12,8 @@ namespace Zelda::Yaz0
         assert(hdr->valid());
 
         size_t decSize = Utils::Be::bomSwap(hdr->decSize);
+        if (outSize != SIZE_MAX && outSize < decSize)
+            decSize = outSize;
 
         size_t bitIdx = 7;
         u8 hdrByte;
@@ -45,7 +47,7 @@ namespace Zelda::Yaz0
                 if (nBytes == 2) // 3 bytes
                     nBytes = inPtr[inIdx++] + 0x12;
 
-                while (nBytes-- > 0)
+                while (nBytes-- > 0 && outIdx < decSize)
                     outPtr[outIdx++] = outPtr[backIdx++];
             }
 

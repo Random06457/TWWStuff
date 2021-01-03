@@ -24,6 +24,7 @@ namespace Gc
 
             FileEntry* getFileEntry(std::string path);
             std::vector<u8> readFile(FileEntry* entry) const;
+            std::unique_ptr<Utils::DataReader> getFileReader(FileEntry* entry) const;
             inline const char* getName(FileEntry* entry) const
             {
                 return m_FstStrTable.data() + entry->nameOff;

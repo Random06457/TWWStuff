@@ -80,6 +80,12 @@ namespace Gc::Gcm
         return m_Reader->readData(entry->file.fileSize);
     }
 
+    std::unique_ptr<Utils::DataReader> Reader::getFileReader(FileEntry* entry) const
+    {
+        assert(!entry->isDir);
+        return m_Reader->createSubReader(entry->file.fileOff, entry->file.fileSize);
+    }
+
     void normalizePath(std::string& path)
     {
         // add leading '/'

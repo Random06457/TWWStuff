@@ -6,7 +6,6 @@ namespace Utils
     MemReader::MemReader(void* buffer, size_t size, bool freeInDtor) :
         DataReader(),
         m_Buffer(reinterpret_cast<u8*>(buffer)),
-        m_Pos(0),
         m_FreeInDtor(freeInDtor)
     {
         m_Size = size;
@@ -18,18 +17,13 @@ namespace Utils
             delete[] m_Buffer;
     }
 
-    
-    size_t MemReader::getPosImpl() const
-    {
-        return m_Pos;
-    }
-    void MemReader::seekImpl(size_t off)
-    {
-        m_Pos = off;
-    }
     void MemReader::readDataImpl(void* buffer, size_t size)
     {
         memcpy(buffer, m_Buffer + m_Pos, size);
-        m_Pos += size;
+    }
+    
+    std::unique_ptr<DataReader> MemReader::createSubReader(size_t base, size_t size) const
+    {
+        return std::make_unique<MemReader>(this, base, size);
     }
 }

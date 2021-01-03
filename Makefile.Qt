@@ -10,15 +10,19 @@ EXCLUDE_CMD := -path $(CMD_SRC_DIR) -prune -false -o
 INCDIRS := -I$(SRC)
 LIBS := 
 
+LD := x86_64-w64-mingw32-clang++
 CXX := x86_64-w64-mingw32-g++
-MOC := $(QT_PATH)/bin/moc.exe
-UIC := $(QT_PATH)/bin/uic.exe
-RCC := $(QT_PATH)/bin/rcc.exe
+MOC := moc
+UIC := uic
+RCC := rcc
 
+ifndef ($(OPT_FLAGS))
+	OPT_FLAGS := -g
+endif
 
-CXX_FLAGS := -Wall -DQT_BUILD
-LIBS += -L$(QT_PATH)/lib -lQt5Widgets -lQt5Gui -lQt5Core -lqtmain
-INCDIRS += -I$(QT_PATH)/include -I$(QT_PATH)/include/QtGui -I$(QT_PATH)/include/QtCore -I$(QT_SRC_DIR)
+CXX_FLAGS := -Wall -DQT_BUILD $(OPT_FLAGS)
+LIBS += -L$(QT_LIB_PATH) -lQt5Widgets -lQt5Gui -lQt5Core -lqtmain
+INCDIRS += -I$(QT_INC_PATH) -I$(QT_INC_PATH)/QtGui -I$(QT_INC_PATH)/QtCore -I$(QT_SRC_DIR)
 
 
 SRC_DIRS := $(shell find $(SRC) $(EXCLUDE_CMD) -type d)
@@ -44,7 +48,7 @@ $(QT_SRC_DIR)/%.moc.cpp : $(QT_SRC_DIR)/%.h
 	$(MOC) $< $(INCDIRS) -o $@
 
 $(TARGET): $(OBJS)
-	$(CXX) $^ $(LIBS) -o $@
+	$(LD) $^ $(LIBS) -o $@
 
 
 $(shell mkdir -p $(SRC_DIRS:$(SRC)%=$(BUILD)%))

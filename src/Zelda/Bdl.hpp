@@ -5,8 +5,8 @@
 #include "NameHash.hpp"
 #include "BinaryRes.hpp"
 
-#define MAGIC_BDL3  "J3D2bdl3"
-#define MAGIC_BDL4  "J3D2bdl4"
+#define BDL3_MAGIC  "J3D2bdl3"
+#define BDL4_MAGIC  "J3D2bdl4"
 
 namespace Zelda::Bdl
 {
@@ -26,7 +26,7 @@ namespace Zelda::Bdl
 
         inline bool valid() const
         {
-            return magic.matches(MAGIC_BDL3) || magic.matches(MAGIC_BDL4);
+            return magic.matches(BDL3_MAGIC) || magic.matches(BDL4_MAGIC);
         }
     };
     static_assert(sizeof(BdlHeader) == 0x20);

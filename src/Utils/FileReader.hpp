@@ -8,12 +8,16 @@ namespace Utils
     class FileReader : public DataReader
     {
     public:
+        FileReader(const FileReader* parent, size_t baseAddr, size_t size) :
+            DataReader(parent, baseAddr, size),
+            m_File(parent->m_File)
+        { }
         FileReader(std::string path);
         virtual ~FileReader();
         
+        virtual std::unique_ptr<DataReader> createSubReader(size_t base, size_t size) const;
+        
     private:
-        virtual size_t getPosImpl() const;
-        virtual void seekImpl(size_t off);
         virtual void readDataImpl(void* buffer, size_t size);
 
     protected:
